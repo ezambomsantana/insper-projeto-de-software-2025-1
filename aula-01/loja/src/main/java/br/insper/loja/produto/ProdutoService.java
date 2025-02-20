@@ -11,10 +11,13 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ProdutoService {
 
-    // URL base da API de produtos (ajuste a porta e caminho conforme sua configuração)
+    // URL base da API de produtos (ajuste conforme necessário)
     private static final String PRODUCT_API_BASE_URL = "http://localhost:8080/api/produto";
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
+    // Obtém um produto e verifica se ele existe
     public Produto getProduto(String id) {
-        RestTemplate restTemplate = new RestTemplate();
         try {
             ResponseEntity<Produto> response = restTemplate.getForEntity(PRODUCT_API_BASE_URL + "/" + id, Produto.class);
             return response.getBody();
@@ -22,15 +25,24 @@ public class ProdutoService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado");
         }
     }
+
+    // Verifica se um produto tem estoque disponível antes da compra
+    public void validarProdutoComEstoque(String id) {
+        Produto produto = getProduto(id);
+        if (produto == null || produto.getEstoque() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Produto " + id + " está sem estoque disponível.");
+        }
+    }
+
+    // Diminui o estoque de um produto após a compra
     public Produto diminuirEstoque(String id) {
-        RestTemplate restTemplate = new RestTemplate();
+        validarProdutoComEstoque(id); // Garante que só reduz estoque de produtos válidos
         try {
-            // Endpoint da API de produtos que diminui o estoque (configurado para diminuir sempre 1)
             String url = PRODUCT_API_BASE_URL + "/" + id + "/diminuir";
             ResponseEntity<Produto> response = restTemplate.exchange(url, HttpMethod.PUT, null, Produto.class);
             return response.getBody();
         } catch (HttpClientErrorException.NotFound e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado para diminuir o estoque");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao diminuir o estoque do produto " + id);
         }
     }
 }
