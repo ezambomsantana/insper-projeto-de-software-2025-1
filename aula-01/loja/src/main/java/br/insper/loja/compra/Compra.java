@@ -15,6 +15,7 @@ public class Compra {
     private String nome;
     private List<String> produtos = new ArrayList<>();
     private LocalDateTime dataCompra;
+
     private double totalPreco; // Novo atributo para o preço total da compra
 
     public String getId() {
