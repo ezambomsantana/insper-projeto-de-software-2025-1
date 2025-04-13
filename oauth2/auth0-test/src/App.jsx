@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import LoginButton from './components/LoginButton';
+import LogoutButton from './components/LogoutButton'
 import { useAuth0 } from '@auth0/auth0-react';
 
 function App() {
@@ -38,6 +39,8 @@ function App() {
     return <LoginButton />;
   }
 
+  
+
   return (
     <>
       <div>
@@ -46,6 +49,7 @@ function App() {
         <p>{user.email}</p>
         <h3>Token JWT:</h3>
         <pre>{token}</pre>
+        <LogoutButton />
       </div>
     </>
   );
