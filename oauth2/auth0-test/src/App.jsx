@@ -9,6 +9,10 @@ import { useAuth0 } from '@auth0/auth0-react';
 function App() {
   const [token, setToken] = useState(null)
 
+  const [titulo, setTitulo] = useState()
+  const [descricao, setDescricao] = useState()
+  const [tempo, setTempo] = useState()
+
   const {
     user,
     isAuthenticated,
@@ -39,6 +43,27 @@ function App() {
     return <LoginButton />;
   }
 
+  function salvarMusica() {
+
+    fetch('http://localhost:8080/musica', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({
+        'titulo': titulo,
+        'descricao': descricao,
+        'tempo': tempo
+      })
+    }).then(response => { 
+      return response.json()
+    }).catch(error => {
+      alert(error)
+    })
+
+  }
+
   
 
   return (
@@ -50,6 +75,11 @@ function App() {
         <h3>Token JWT:</h3>
         <pre>{token}</pre>
         <LogoutButton />
+
+        Título: <input type='text' onChange={e => setTitulo(e.target.value)} /><br/>
+        Descrição: <input type='text' onChange={e => setDescricao(e.target.value)} /><br/>
+        Tempo: <input type='text' onChange={e => setTempo(e.target.value)} /><br/>
+        <button onClick={() => salvarMusica()}>Cadastrar</button>
       </div>
     </>
   );
