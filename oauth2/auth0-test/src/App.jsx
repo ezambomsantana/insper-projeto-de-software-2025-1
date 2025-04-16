@@ -30,6 +30,15 @@ function App() {
       }
     };
 
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('Email:', payload['https://musica-insper.com/email']);
+      console.log('Roles:', payload['https://musica-insper.com/roles']);
+    } catch(e) {}
+    
+
+
+
     if (isAuthenticated) {
       fetchToken();
     }
@@ -76,10 +85,12 @@ function App() {
         <pre>{token}</pre>
         <LogoutButton />
 
-        Título: <input type='text' onChange={e => setTitulo(e.target.value)} /><br/>
-        Descrição: <input type='text' onChange={e => setDescricao(e.target.value)} /><br/>
-        Tempo: <input type='text' onChange={e => setTempo(e.target.value)} /><br/>
-        <button onClick={() => salvarMusica()}>Cadastrar</button>
+        <div>
+          Título: <input type='text' onChange={e => setTitulo(e.target.value)} /><br/>
+          Descrição: <input type='text' onChange={e => setDescricao(e.target.value)} /><br/>
+          Tempo: <input type='text' onChange={e => setTempo(e.target.value)} /><br/>
+          <button onClick={() => salvarMusica()}>Cadastrar</button>
+        </div>
       </div>
     </>
   );
